@@ -63,6 +63,17 @@ export interface WealthSnapshot {
   equity: number
   fo_pnl: number
   fd: number
+  physical: number
+}
+
+export interface PhysicalAsset {
+  id: string
+  name: string
+  category: 'vehicle' | 'property' | 'other'
+  purchase_value: number   // IDV / market value at purchase
+  purchase_date: string    // ISO date string
+  depreciation_type: 'irdai_vehicle' | 'straight_line' | 'none'
+  straight_line_years?: number  // useful life for straight-line method
 }
 
 export interface UploadLogEntry {

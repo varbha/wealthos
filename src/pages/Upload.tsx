@@ -4,6 +4,7 @@ import { detectParser } from '../parsers/detectParser'
 import { parseMFCAS } from '../parsers/parseMFCAS'
 import { parseEquity } from '../parsers/parseEquity'
 import { parseFO } from '../parsers/parseFO'
+import { currentAssetValue } from '../calculators/assetDepreciation'
 import type { UploadLogEntry } from '../types'
 
 const CLASS_LABELS: Record<string, string> = {
@@ -21,14 +22,15 @@ export default function Upload() {
 
   function takeSnapshot() {
     const state = useWealthStore.getState()
-    const mf = state.mfHoldings.reduce((s, h) => s + h.current_value, 0)
-    const equity = state.equityHoldings.reduce((s, h) => s + h.current_value, 0)
-    const fo_pnl = state.foSummary?.realized_pnl ?? 0
-    const fd = state.fdList.filter(f => f.is_active).reduce((s, f) => s + f.maturity_value, 0)
+    const mf       = state.mfHoldings.reduce((s, h) => s + h.current_value, 0)
+    const equity   = state.equityHoldings.reduce((s, h) => s + h.current_value, 0)
+    const fo_pnl   = state.foSummary?.realized_pnl ?? 0
+    const fd       = state.fdList.filter(f => f.is_active).reduce((s, f) => s + f.maturity_value, 0)
+    const physical = state.physicalAssets.reduce((s, a) => s + currentAssetValue(a), 0)
     appendSnapshot({
       date: new Date().toISOString().slice(0, 10),
-      total: mf + equity + fo_pnl + fd,
-      mf, equity, fo_pnl, fd,
+      total: mf + equity + fo_pnl + fd + physical,
+      mf, equity, fo_pnl, fd, physical,
     })
   }
 

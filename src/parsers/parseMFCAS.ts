@@ -47,8 +47,8 @@ export function parseMFCAS(buffer: ArrayBuffer): MFHolding[] {
 }
 
 function normaliseCategory(raw: string): string {
-  const upper = raw.toUpperCase()
-  if (upper === 'EQUITY' || upper === 'EQUITY FUND' || upper === 'EQUITY FUNDS') return 'Equity'
+  const upper = raw.toUpperCase().trim()
+  if (upper.startsWith('EQUITY')) return 'Equity'
   if (upper === 'CASH' || upper === 'LIQUID') return 'Liquid'
   if (upper === 'DEBT') return 'Debt'
   if (upper === 'HYBRID') return 'Hybrid'
